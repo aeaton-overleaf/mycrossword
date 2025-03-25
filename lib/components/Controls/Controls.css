@@ -6,12 +6,3 @@
   flex-wrap: wrap;
   min-height: calc(var(--grid-size) * 7);
 }
-#anagram-control span::after {
-  content: 'Anagram helper';
-}
-
-@media (width <= 576px) {
-  #anagram-control span::after {
-    content: 'Anag.';
-  }
-}
