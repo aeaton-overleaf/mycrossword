@@ -20,7 +20,6 @@ interface ControlsProps {
   clues: Clue[];
   gridCols: number;
   gridRows: number;
-  onAnagramHelperClick: () => void;
   onCellChange?: (cellChange: CellChange) => void;
   onComplete?: () => void;
   setGuessGrid: (value: GuessGrid | ((val: GuessGrid) => GuessGrid)) => void;
@@ -32,7 +31,6 @@ export default function Controls({
   clues,
   gridCols,
   gridRows,
-  onAnagramHelperClick,
   onCellChange,
   onComplete,
   setGuessGrid,
@@ -404,16 +402,6 @@ export default function Controls({
         </>
       ) : null}
       <DropdownButton id="clear-control" menu={clearMenu} text="Clear" />
-      <div className={bem('Controls__buttonContainer')}>
-        <Button
-          ariaLabel="Anagram helper"
-          disabled={selectedClue === undefined}
-          id="anagram-control"
-          onClick={onAnagramHelperClick}
-        >
-          <span />
-        </Button>
-      </div>
     </div>
   );
 }

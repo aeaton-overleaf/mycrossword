@@ -13,7 +13,6 @@ import GridError from '~/components/GridError/GridError';
 import StickyClue from '~/components/StickyClue/StickyClue';
 import Grid from '~/components/Grid/Grid';
 import Clues from '~/components/Clues/Clues';
-import AnagramHelper from '~/components/AnagramHelper/AnagramHelper';
 import { CELL_SIZE } from '~/components/GridCell/GridCell';
 import useLocalStorage from '~/hooks/useLocalStorage/useLocalStorage';
 import { initialiseCells } from '~/utils/cell';
@@ -114,7 +113,6 @@ export default function Crossword({
     selectedClue?.group.length === 1
       ? selectedClue
       : clues.find((clue) => clue.id === selectedClue?.group[0]);
-  const [isAnagramHelperOpen, setIsAnagramHelperOpen] = React.useState(false);
   const gridHeight =
     data.dimensions.rows * CELL_SIZE + data.dimensions.rows + 1;
   const gridWidth = data.dimensions.cols * CELL_SIZE + data.dimensions.cols + 1;
@@ -228,59 +226,40 @@ export default function Crossword({
               data.dimensions.cols * CELL_SIZE + data.dimensions.cols + 1,
           }}
         >
-          {isAnagramHelperOpen && parentClue !== undefined ? (
-            <AnagramHelper
-              allowedHtmlTags={allowedHtmlTags}
-              clue={parentClue}
-              groupCells={getGroupCells(parentClue.group, cells)}
-              groupSeparators={getGroupSeparators(parentClue.group, clues)}
-              onClose={() => setIsAnagramHelperOpen(false)}
-              style={{
-                height: gridHeight,
-                maxHeight: gridHeight,
-                width: gridWidth,
-                maxWidth: gridWidth,
-              }}
+          {stickyClue !== 'never' ? (
+            <StickyClue
+              allowedTags={allowedHtmlTags}
+              num={
+                parentClue?.group.length === 1
+                  ? `${parentClue.number}${parentClue.direction.charAt(0)}`
+                  : parentClue?.humanNumber
+              }
+              onMoveNext={() => moveToNextClue(true)}
+              onMovePrev={() => moveToNextClue(false)}
+              show={stickyClue}
+              text={parentClue?.clue}
             />
-          ) : (
-            <>
-              {stickyClue !== 'never' ? (
-                <StickyClue
-                  allowedTags={allowedHtmlTags}
-                  num={
-                    parentClue?.group.length === 1
-                      ? `${parentClue.number}${parentClue.direction.charAt(0)}`
-                      : parentClue?.humanNumber
-                  }
-                  onMoveNext={() => moveToNextClue(true)}
-                  onMovePrev={() => moveToNextClue(false)}
-                  show={stickyClue}
-                  text={parentClue?.clue}
-                />
-              ) : null}
-              <Grid
-                cellMatcher={cellMatcher}
-                cells={cells}
-                clues={clues}
-                cols={data.dimensions.cols}
-                guessGrid={guessGrid}
-                inputRef={inputRef}
-                onCellChange={onCellChange}
-                onCellFocus={onCellFocus}
-                onComplete={onComplete}
-                rawClues={data.entries}
-                rows={data.dimensions.rows}
-                setGuessGrid={saveGrid ?? setGuessGrid}
-              />
-            </>
-          )}
+          ) : null}
+          <Grid
+            cellMatcher={cellMatcher}
+            cells={cells}
+            clues={clues}
+            cols={data.dimensions.cols}
+            guessGrid={guessGrid}
+            inputRef={inputRef}
+            onCellChange={onCellChange}
+            onCellFocus={onCellFocus}
+            onComplete={onComplete}
+            rawClues={data.entries}
+            rows={data.dimensions.rows}
+            setGuessGrid={saveGrid ?? setGuessGrid}
+          />
         </div>
         <Controls
           cells={cells}
           clues={clues}
           gridCols={data.dimensions.cols}
           gridRows={data.dimensions.rows}
-          onAnagramHelperClick={() => setIsAnagramHelperOpen((val) => !val)}
           onCellChange={onCellChange}
           onComplete={onComplete}
           setGuessGrid={saveGrid ?? setGuessGrid}
